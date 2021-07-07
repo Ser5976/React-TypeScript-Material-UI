@@ -11,3 +11,4 @@ export const store = createStore(
   rootReducer,
   composeWithDevTools(applyMiddleware(thunk))
 );
+export type RootStateType = ReturnType<typeof rootReducer>; //типизация стейта

@@ -19,9 +19,6 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
-  iconbutton: {
-    //marginRight: theme.spacing(3),
-  },
   menu: {
     marginTop: '50px',
   },
@@ -55,7 +52,6 @@ const NavBar: React.FC = () => {
             aria-label="menu"
             aria-controls="menu"
             onClick={handleOpenMenu}
-            className={classes.iconbutton}
           >
             <MenuIcon />
           </IconButton>
@@ -76,8 +72,8 @@ const NavBar: React.FC = () => {
           </Link>
         </MenuItem>
         <MenuItem onClick={handleClose}>
-          <Link to="/userslist" className={classes.link}>
-            Список пользователей
+          <Link to="/photoslist" className={classes.link}>
+            JSONPlaceholder/photos
           </Link>
         </MenuItem>
       </Menu>

@@ -44,12 +44,17 @@ const useStyles = makeStyles((theme) => ({
   container: {
     padding: '50px 200px',
   },
-  list: { marginTop: '50px' },
+  list: { marginTop: '30px' },
   listitemtext: {
     color: 'red',
   },
   textField: {
     marginBottom: '15px',
+  },
+  textTitle: {
+    fontSize: '25px',
+    textShadow: '1px 1px #9a0036',
+    color: '#9a0036',
   },
 }));
 
@@ -109,11 +114,11 @@ const TodoListContainer: React.FC<PropsType> = ({
           className={classes.textField}
         />
         {todoList.length === 0 ? (
-          <Typography align="center" color="inherit">
+          <Typography align="center" className={classes.textTitle}>
             Пока дел нет!
           </Typography>
         ) : (
-          <Typography align="center" color="inherit">
+          <Typography align="center" className={classes.textTitle}>
             Список дел!
           </Typography>
         )}

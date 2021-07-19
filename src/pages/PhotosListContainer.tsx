@@ -89,7 +89,7 @@ const PhotosListCotainer: React.FC<PropsType> = ({
                       />
                     </Grid>
                     <Grid item xs>
-                      <Typography>{item.title}</Typography>
+                      <Typography variant="body2">{item.title}</Typography>
                     </Grid>
                   </Grid>
                 </Paper>

@@ -72,8 +72,13 @@ const NavBar: React.FC = () => {
           </Link>
         </MenuItem>
         <MenuItem onClick={handleClose}>
-          <Link to="/photoslist" className={classes.link}>
+          <Link to="/photosList" className={classes.link}>
             JSONPlaceholder/photos
+          </Link>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <Link to="/muiForm" className={classes.link}>
+            MuiForm
           </Link>
         </MenuItem>
       </Menu>

@@ -164,6 +164,16 @@ const TodoListContainer: React.FC<PropsType> = ({
             );
           })}
         </List>
+        <footer>
+          <Typography
+            align="center"
+            color="textSecondary"
+            component="p"
+            variant="subtitle1"
+          >
+            nkjfdgfdlkmslgnmlg
+          </Typography>
+        </footer>
       </Container>
     </>
   );

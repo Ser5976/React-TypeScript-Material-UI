@@ -95,12 +95,15 @@ const MuiFormContainer: React.FC<PropsType> = ({
   const onSubmit: SubmitHandler<NoteType> = (data: NoteType): void => {
     console.log('Отправлено:', data);
     sendNote(data);
-    const selectNote = {
-      title: '',
-      detalis: '',
-      category: '',
-    };
-    clearSelectNote(selectNote);
+    if (selectNote.id) {
+      const note = {
+        title: '',
+        detalis: '',
+        category: '',
+      };
+      clearSelectNote(note);
+    }
+
     history.push('/notes');
   };
 

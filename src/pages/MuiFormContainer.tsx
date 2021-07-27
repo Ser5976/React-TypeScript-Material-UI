@@ -4,17 +4,16 @@ import { NoteType, clearSelectNote } from '../store/reducers/notesReducer';
 import { sendNote } from '../action/notesAction';
 import { RootStateType } from '../store/store';
 import { useHistory } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 //import { DropzoneArea } from 'material-ui-dropzone';// загрузка файлов
 import {
   Container,
-  FormControl,
   makeStyles,
   Paper,
   TextField,
   Typography,
-  Select,
   MenuItem,
-  InputLabel,
   Icon,
   Button,
 } from '@material-ui/core';
@@ -80,6 +79,13 @@ const useStyles = makeStyles((theme) => ({
     '& 	.MuiDropzoneArea-icon': { color: '#1a237e' },
   }, */
 }));
+//схема валидации---------------------
+const schema = yup.object().shape({
+  title: yup.string().required('Поле обязательное для заполнения'),
+  detalis: yup.string().required('Поле обязательное для заполнения'),
+  category: yup.string().required('Пожалуйста, выберите категорию'),
+});
+//-----------------------------------------
 
 const MuiFormContainer: React.FC<PropsType> = ({
   sendNote,
@@ -90,7 +96,15 @@ const MuiFormContainer: React.FC<PropsType> = ({
   const { title, detalis, category } = selectNote;
   const classes = useStyles();
   const history = useHistory();
-  const { handleSubmit, control } = useForm<NoteType>();
+  const {
+    handleSubmit,
+    control,
+    formState: { errors, isValid, isDirty },
+  } = useForm<NoteType>({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+  });
+  console.log(errors);
 
   const onSubmit: SubmitHandler<NoteType> = (data: NoteType): void => {
     console.log('Отправлено:', data);
@@ -113,7 +127,7 @@ const MuiFormContainer: React.FC<PropsType> = ({
         <Typography align="center" className={classes.textTitle}>
           Создать новую запись
         </Typography>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
           <Controller
             name="title"
             control={control}
@@ -126,6 +140,8 @@ const MuiFormContainer: React.FC<PropsType> = ({
                 fullWidth
                 size="medium"
                 type="text"
+                error={!!errors.title}
+                helperText={errors.title ? errors.title?.message : null}
               />
             )}
           />
@@ -143,6 +159,8 @@ const MuiFormContainer: React.FC<PropsType> = ({
                 fullWidth
                 size="medium"
                 type="email"
+                error={!!errors.detalis}
+                helperText={errors.detalis ? errors.detalis?.message : null}
               />
             )}
           />
@@ -152,18 +170,24 @@ const MuiFormContainer: React.FC<PropsType> = ({
             control={control}
             defaultValue={category}
             render={({ field }) => (
-              <FormControl fullWidth>
-                <InputLabel style={{ color: '#1a237e' }}>Категория</InputLabel>
-                <Select {...field} style={{ color: '#1a237e' }}>
-                  {position.map((item, index) => {
-                    return (
-                      <MenuItem value={item.value} key={index}>
-                        {item.title}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
+              <TextField
+                {...field}
+                style={{ color: '#1a237e' }}
+                fullWidth
+                error={!!errors.category}
+                select
+                label="Категория"
+                variant="outlined"
+                helperText={errors.category ? errors.category?.message : null}
+              >
+                {position.map((item, index) => {
+                  return (
+                    <MenuItem value={item.value} key={index}>
+                      {item.title}
+                    </MenuItem>
+                  );
+                })}
+              </TextField>
             )}
           />
           {/* <Controller
@@ -180,12 +204,13 @@ const MuiFormContainer: React.FC<PropsType> = ({
             />  к сожалению json-server не работает с файлами*/}
 
           <Button
-            style={{ backgroundColor: '#9a0036', marginTop: '50px' }}
+            style={{ backgroundColor: '#9a0036', marginTop: '25px' }}
             variant="contained"
             color="primary"
             fullWidth
             endIcon={<Icon>send</Icon>}
             type="submit"
+            disabled={!isValid || !isDirty}
           >
             Send
           </Button>

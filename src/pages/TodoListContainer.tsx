@@ -12,34 +12,38 @@ import {
   Checkbox,
   Divider,
   Typography,
+  Box,
 } from '@material-ui/core';
-import { connect } from 'react-redux';
 import {
-  setTodoList, //action, изменяет список дел
   TodoListType, // тип, типизирует отдельный объект списка
-  SetTodoListActionType, // тип, типизирует  setTodoList
-  deleteTodoList, // action, удаляет дело в списке
-  DeleteTodoListActionType, // тип, типизирует  deleteTodoList
-  SetMadeActionType, // тип, типизирует setMade
   SetTitleActionType, //тип, типизирует setTitle
-  setMade, //action, изменяет ,булевое значение(чекбокс)
   setTitle, //action,добавляет значение инпута в объект
 } from '../store/reducers/todoListReducer';
+import {
+  getTodoList, // получение спика дел
+  sendTodoList, // добавление дела в список дел
+  deleteTodo, //удаление дела из спика дел
+  setMade, //изменяет  объект, в котором изменился  made, на серваке
+} from '../action/todoListAction';
 import { RootStateType } from '../store/store'; // тип всего стейта( для типизации state)
-
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { connect } from 'react-redux';
 //типизация---------------------------------------------------------------------
 type MapStateToPropsType = {
   todoList: TodoListType[];
   title: string;
+  isFetching: boolean;
+  isFetchError: boolean;
 };
 type MapDispathPropsType = {
-  setTodoList: (data: TodoListType[]) => SetTodoListActionType;
-  deleteTodoList: (id: number) => DeleteTodoListActionType;
-  setMade: (id: number) => SetMadeActionType;
   setTitle: (value: string) => SetTitleActionType;
+  getTodoList: () => void;
+  sendTodoList: (data: TodoListType) => void;
+  deleteTodo: (id: number) => void;
+  setMade: (id: number, todo: TodoListType) => void;
 };
 type PropsType = MapStateToPropsType & MapDispathPropsType;
-//-----------------------------------------------------------------
+// -----------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   container: {
     padding: '50px 200px',
@@ -55,49 +59,55 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '25px',
     textShadow: '1px 1px #9a0036',
     color: '#9a0036',
+    marginTop: '25px',
   },
 }));
 
 const TodoListContainer: React.FC<PropsType> = ({
-  todoList,
-  title,
-  setTodoList,
-  deleteTodoList,
-  setMade,
-  setTitle,
+  todoList, //список дел
+  title, //заголовок списка дел
+  isFetching, // крутилка
+  isFetchError, // ошибка
+  setTitle, //запись значения инпута в стейт(title)
+  getTodoList, //запрос на сервак, список дел
+  sendTodoList, //отправить объект списка дел на сервак
+  deleteTodo, // удалить дело
+  setMade, // изменяет  объек, в котором изменился  made, на серваке
 }) => {
   const classes = useStyles();
-  // берём данные из localStorage и добавляем их в стор
+  // запрос на сервак, список дел
   useEffect(() => {
-    const saved = JSON.parse(
-      localStorage.getItem('todoList') || '[]'
-    ) as TodoListType[];
-    setTodoList(saved);
+    getTodoList();
     // eslint-disable-next-line
   }, []);
-  // сохранение данных в localStorage
-  useEffect(() => {
-    localStorage.setItem('todoList', JSON.stringify(todoList));
-  }, [todoList]);
-  // создаём объект,добавляем в созданный массив и меняем массив в сторе на новый
+
+  // создаём объект списка дел, передаём его в санку
   const addList = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && title !== '') {
       const todo = { title: title, id: Math.random(), made: false };
-      const newTodoList = [...todoList, todo];
-      setTodoList(newTodoList);
+      sendTodoList(todo);
       setTitle('');
     }
   };
   // пример типизации событий
   const deleteList = (e: React.MouseEvent<HTMLButtonElement>, id: number) => {
     e.preventDefault(); // это чтобы при удалении элемента списка, выделенный checkbox не передавался следующему
-    deleteTodoList(id);
+    deleteTodo(id);
   };
-  //изменяем булевое значение чекбокса
+  //изменяем булевое значение чекбокса и передаём объек, в котором изменился made, в санку
   const handleChange = (id: number) => {
-    setMade(id);
-  };
-  // отправляем значение инпута в стор
+    todoList.map((item) => {
+      if (item.id === id) {
+        item.made = !item.made;
+      }
+      return item;
+    });
+    const todo = todoList.filter((item) => item.id === id);
+    const todoObject = todo[0];
+    setMade(id, todoObject);
+  }; //жуть конечно,но получил этот долбанный объект и передал в санку
+
+  // отправляем значение инпута в стор(это title)
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
   };
@@ -113,7 +123,20 @@ const TodoListContainer: React.FC<PropsType> = ({
           onKeyPress={addList} //событие на нажатия клавиатуры
           className={classes.textField}
         />
-        {todoList.length === 0 ? (
+        {isFetchError ? (
+          <Typography align="center" className={classes.textTitle}>
+            Что-то пошло не так!
+          </Typography>
+        ) : isFetching ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            style={{ height: window.innerHeight - 65.6 }}
+          >
+            <CircularProgress disableShrink />
+          </Box>
+        ) : todoList.length === 0 ? (
           <Typography align="center" className={classes.textTitle}>
             Пока дел нет!
           </Typography>
@@ -164,16 +187,6 @@ const TodoListContainer: React.FC<PropsType> = ({
             );
           })}
         </List>
-        <footer>
-          <Typography
-            align="center"
-            color="textSecondary"
-            component="p"
-            variant="subtitle1"
-          >
-            nkjfdgfdlkmslgnmlg
-          </Typography>
-        </footer>
       </Container>
     </>
   );
@@ -183,13 +196,19 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
   return {
     todoList: state.todoList.todoList,
     title: state.todoList.title,
+    isFetching: state.todoList.isFetching, //крутилка
+    isFetchError: state.todoList.isFetchError,
   };
 };
 export default connect<
   MapStateToPropsType,
   MapDispathPropsType,
-  unknown,
+  unknown, // личные пропсы
   RootStateType
->(mapStateToProps, { setTodoList, deleteTodoList, setMade, setTitle })(
-  TodoListContainer
-);
+>(mapStateToProps, {
+  setMade,
+  setTitle,
+  getTodoList,
+  sendTodoList,
+  deleteTodo,
+})(TodoListContainer);

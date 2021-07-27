@@ -68,7 +68,7 @@ const NavBar: React.FC = () => {
         <MenuItem onClick={handleClose}>
           {' '}
           <Link to="/" className={classes.link}>
-            Список дел
+            To do list
           </Link>
         </MenuItem>
         <MenuItem onClick={handleClose}>
@@ -78,7 +78,12 @@ const NavBar: React.FC = () => {
         </MenuItem>
         <MenuItem onClick={handleClose}>
           <Link to="/muiForm" className={classes.link}>
-            MuiForm
+            Create a new note
+          </Link>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <Link to="/notes" className={classes.link}>
+            Notes
           </Link>
         </MenuItem>
       </Menu>

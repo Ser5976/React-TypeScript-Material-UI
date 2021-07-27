@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     textShadow: '1px 1px #9a0036',
     color: '#9a0036',
     marginBottom: '25px',
+    marginTop: '25px',
   },
 }));
 
@@ -52,11 +53,7 @@ const PhotosListCotainer: React.FC<PropsType> = ({
   return (
     <>
       {isFetchError ? (
-        <Typography
-          align="center"
-          className={classes.textTitle}
-          style={{ marginTop: '25px' }}
-        >
+        <Typography align="center" className={classes.textTitle}>
           Что-то пошло не так!
         </Typography>
       ) : isFetching ? (

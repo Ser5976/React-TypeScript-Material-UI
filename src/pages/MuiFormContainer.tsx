@@ -1,27 +1,53 @@
 import React from 'react';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
+import { NoteType, clearSelectNote } from '../store/reducers/notesReducer';
+import { sendNote } from '../action/notesAction';
+import { RootStateType } from '../store/store';
+import { useHistory } from 'react-router-dom';
+//import { DropzoneArea } from 'material-ui-dropzone';// загрузка файлов
 import {
   Container,
   FormControl,
-  FormControlLabel,
-  Radio,
-  FormLabel,
-  Grid,
   makeStyles,
   Paper,
-  RadioGroup,
   TextField,
   Typography,
   Select,
   MenuItem,
   InputLabel,
-  Box,
   Icon,
   Button,
 } from '@material-ui/core';
+import { connect } from 'react-redux';
+
+//типизация-----------------------------
+//select
+type PositionType = {
+  value: string;
+  title: string;
+};
+//props
+type MapStateToPropsType = {
+  isFetchError: boolean;
+  selectNote: NoteType;
+};
+type MapDispathPropsType = {
+  sendNote: (data: NoteType) => void;
+  clearSelectNote: (data: NoteType) => void;
+};
+type PropsType = MapStateToPropsType & MapDispathPropsType;
+
+//--------------------------------------
+
+const position: Array<PositionType> = [
+  { value: 'Итальянская кухня', title: 'Итальянская кухня' },
+  { value: 'Французская кухня', title: 'Французская кухня' },
+  { value: 'Китайская кухня', title: 'Китайская кухня' },
+];
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    marginTop: 150,
+    marginTop: 75,
     padding: '50px 25px',
     '& .MuiTextField-root': {
       marginBottom: 20,
@@ -46,77 +72,138 @@ const useStyles = makeStyles((theme) => ({
     color: '#9a0036',
     marginBottom: 20,
   },
+  /* dropzone: {
+    minHeight: 100,
+    marginTop: 30,
+    border: '0px',
+    '& 	.MuiDropzoneArea-text': { color: '#1a237e', fontSize: '1.15rem' },
+    '& 	.MuiDropzoneArea-icon': { color: '#1a237e' },
+  }, */
 }));
 
-const MuiFormContainer: React.FC = () => {
+const MuiFormContainer: React.FC<PropsType> = ({
+  sendNote,
+  selectNote,
+  clearSelectNote,
+}) => {
+  // console.log(selectNote);
+  const { title, detalis, category } = selectNote;
   const classes = useStyles();
+  const history = useHistory();
+  const { handleSubmit, control } = useForm<NoteType>();
+
+  const onSubmit: SubmitHandler<NoteType> = (data: NoteType): void => {
+    console.log('Отправлено:', data);
+    sendNote(data);
+    const selectNote = {
+      title: '',
+      detalis: '',
+      category: '',
+    };
+    clearSelectNote(selectNote);
+    history.push('/notes');
+  };
+
   return (
     <Container maxWidth="sm" className={classes.container}>
       <Paper className={classes.paper}>
         <Typography align="center" className={classes.textTitle}>
-          MuiForm!
+          Создать новую запись
         </Typography>
-        <form noValidate>
-          <Grid container spacing={8}>
-            <Grid item md={6}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Controller
+            name="title"
+            control={control}
+            defaultValue={title}
+            render={({ field }) => (
               <TextField
-                label="Full Name"
+                {...field}
+                label="Заголовок"
                 variant="outlined"
                 fullWidth
                 size="medium"
                 type="text"
               />
+            )}
+          />
+          <Controller
+            name="detalis"
+            control={control}
+            defaultValue={detalis}
+            render={({ field }) => (
               <TextField
-                label="Email"
+                {...field}
+                label="Детали"
                 variant="outlined"
+                multiline
+                rows={5}
                 fullWidth
                 size="medium"
                 type="email"
               />
-            </Grid>
-            <Grid item md={6}>
-              <FormControl component="fieldset" style={{ marginBottom: 20 }}>
-                <FormLabel component="legend" style={{ color: '#1a237e' }}>
-                  Gender
-                </FormLabel>
-                <RadioGroup row>
-                  <FormControlLabel
-                    value="male"
-                    control={<Radio />}
-                    label="Male"
-                  />
-                  <FormControlLabel
-                    value="female"
-                    control={<Radio />}
-                    label="Female"
-                  />
-                </RadioGroup>
-              </FormControl>
+            )}
+          />
+
+          <Controller
+            name="category"
+            control={control}
+            defaultValue={category}
+            render={({ field }) => (
               <FormControl fullWidth>
-                <InputLabel style={{ color: '#1a237e' }}>Developer</InputLabel>
-                <Select style={{ color: '#1a237e' }}>
-                  <MenuItem value="front-end">Front-end</MenuItem>
-                  <MenuItem value="back-end">Back-end</MenuItem>
-                  <MenuItem value="full-stack">Full-stack</MenuItem>
+                <InputLabel style={{ color: '#1a237e' }}>Категория</InputLabel>
+                <Select {...field} style={{ color: '#1a237e' }}>
+                  {position.map((item, index) => {
+                    return (
+                      <MenuItem value={item.value} key={index}>
+                        {item.title}
+                      </MenuItem>
+                    );
+                  })}
                 </Select>
               </FormControl>
-            </Grid>
-          </Grid>
-          <Box>
-            <Button
-              style={{ backgroundColor: '#9a0036' }}
-              variant="contained"
-              color="primary"
-              fullWidth
-              endIcon={<Icon>send</Icon>}
-            >
-              Send
-            </Button>
-          </Box>
+            )}
+          />
+          {/* <Controller
+            name="picture"
+            control={control}
+            defaultValue={[]}
+            render={({ field }) => (
+              <DropzoneArea
+                {...field}
+                dropzoneText="Перетащите сюда файл или щелкните"
+                dropzoneClass={classes.dropzone}
+              />
+            )}
+            />  к сожалению json-server не работает с файлами*/}
+
+          <Button
+            style={{ backgroundColor: '#9a0036', marginTop: '50px' }}
+            variant="contained"
+            color="primary"
+            fullWidth
+            endIcon={<Icon>send</Icon>}
+            type="submit"
+          >
+            Send
+          </Button>
         </form>
       </Paper>
     </Container>
   );
 };
 
-export default MuiFormContainer;
+const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
+  return {
+    selectNote: state.notes.selectNote, // выбранная ошибка
+    isFetchError: state.notes.isFetchError, //ошибка
+  };
+};
+export default connect<
+  MapStateToPropsType,
+  MapDispathPropsType,
+  unknown, // личные пропсы
+  RootStateType
+>(mapStateToProps, {
+  sendNote, // добавить новую записку
+  clearSelectNote, //очистить выбранную записку
+})(MuiFormContainer);

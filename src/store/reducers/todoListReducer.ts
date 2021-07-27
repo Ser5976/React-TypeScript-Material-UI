@@ -1,9 +1,8 @@
 const SET_TODO_LIST = 'SET_TODO_LIST';
-const DELETE_TODO_LIST = 'DELETE_LIST';
-const SET_MADE = 'SET_MADE';
 const SET_TITLE = 'SET_TITLE';
-// типизация
-//-------------------------------
+const IS_FETCHING_TODO_LIST = 'IS_FETCHING_TODO_LIST';
+const SET_FETCH_ERROR_TODO_LIST = 'SET_FETCH_ERROR_TODO_LIST';
+// типизация--------------------------------
 export type TodoListType = {
   title: string;
   id: number;
@@ -13,35 +12,39 @@ export type TodoListType = {
 export type TodoListStateType = {
   todoList: TodoListType[];
   title: string;
+  isFetching: boolean;
+  isFetchError: boolean;
 };
 
 export type SetTodoListActionType = {
   type: typeof SET_TODO_LIST;
   payload: TodoListType[];
 };
-export type DeleteTodoListActionType = {
-  type: typeof DELETE_TODO_LIST;
-  payload: number;
-};
-export type SetMadeActionType = {
-  type: typeof SET_MADE;
-  payload: number;
-};
 export type SetTitleActionType = {
   type: typeof SET_TITLE;
   payload: string;
 };
-type ListActionType =
+export type setIsFetchingTodoListActionType = {
+  type: typeof IS_FETCHING_TODO_LIST;
+  payload: boolean;
+};
+export type setFetchErrorTodoListActionType = {
+  type: typeof SET_FETCH_ERROR_TODO_LIST;
+  payload: boolean;
+};
+export type ListActionType =
   | SetTodoListActionType
-  | DeleteTodoListActionType
-  | SetMadeActionType
-  | SetTitleActionType;
+  | SetTitleActionType
+  | setIsFetchingTodoListActionType
+  | setFetchErrorTodoListActionType;
 
 //-------------------------------------------
 
 const initialState: TodoListStateType = {
-  todoList: [],
-  title: '',
+  todoList: [], //массив список дел
+  title: '', //заголовок списка дел
+  isFetching: true, // крутилка
+  isFetchError: false, // ошибка
 };
 
 export const todoListReducer = (
@@ -53,51 +56,49 @@ export const todoListReducer = (
       return {
         ...state,
         todoList: action.payload,
-      };
-    case DELETE_TODO_LIST:
-      return {
-        ...state,
-        todoList: [
-          ...state.todoList.filter((item) => item.id !== action.payload),
-        ],
-      };
-
-    case SET_MADE:
-      return {
-        ...state,
-        todoList: [
-          ...state.todoList.map((item) => {
-            if (item.id === action.payload) {
-              item.made = !item.made;
-            }
-            return item;
-          }),
-        ],
+        isFetching: false,
       };
     case SET_TITLE:
       return {
         ...state,
         title: action.payload,
       };
+    case IS_FETCHING_TODO_LIST:
+      return {
+        ...state,
+        isFetching: action.payload,
+      };
+    case SET_FETCH_ERROR_TODO_LIST:
+      return {
+        ...state,
+        isFetchError: action.payload,
+      };
 
     default:
       return state;
   }
 };
-
+// запись массива списка дел
 export const setTodoList = (data: TodoListType[]): SetTodoListActionType => ({
   type: SET_TODO_LIST,
   payload: data,
 });
-export const deleteTodoList = (id: number): DeleteTodoListActionType => ({
-  type: DELETE_TODO_LIST,
-  payload: id,
-});
-export const setMade = (id: number): SetMadeActionType => ({
-  type: SET_MADE,
-  payload: id,
-});
+//запись значения инпута в стейт(title)
 export const setTitle = (value: string): SetTitleActionType => ({
   type: SET_TITLE,
   payload: value,
+});
+// крутилка
+export const setIsFetchingTodoList = (
+  bul: boolean
+): setIsFetchingTodoListActionType => ({
+  type: IS_FETCHING_TODO_LIST,
+  payload: bul,
+});
+// изменяет булевое значение ошибок
+export const setFetchErrorTodoList = (
+  bul: boolean
+): setFetchErrorTodoListActionType => ({
+  type: SET_FETCH_ERROR_TODO_LIST,
+  payload: bul,
 });

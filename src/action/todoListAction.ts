@@ -46,7 +46,7 @@ export const sendTodoList = (data: TodoListType): ThunkType => {
   };
 };
 // удалить дело(объект в списке дел)
-export const deleteTodo = (id: number): ThunkType => {
+export const deleteTodo = (id: number | undefined): ThunkType => {
   return async (dispatch) => {
     try {
       await axios.delete(ModelUrls.TODOLIST + id);
@@ -58,7 +58,10 @@ export const deleteTodo = (id: number): ThunkType => {
   };
 };
 // изменяет  объек, в котором изменился  made, на серваке
-export const setMade = (id: number, todo: TodoListType): ThunkType => {
+export const setMade = (
+  id: number | undefined,
+  todo: TodoListType
+): ThunkType => {
   return async (dispatch) => {
     try {
       await axios.put(ModelUrls.TODOLIST + id, todo);

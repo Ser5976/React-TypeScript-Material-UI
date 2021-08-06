@@ -5,7 +5,7 @@ const SET_FETCH_ERROR_TODO_LIST = 'SET_FETCH_ERROR_TODO_LIST';
 // типизация--------------------------------
 export type TodoListType = {
   title: string;
-  id: number;
+  _id?: number;
   made: boolean;
 };
 

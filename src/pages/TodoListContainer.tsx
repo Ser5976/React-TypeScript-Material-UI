@@ -39,8 +39,8 @@ type MapDispathPropsType = {
   setTitle: (value: string) => SetTitleActionType;
   getTodoList: () => void;
   sendTodoList: (data: TodoListType) => void;
-  deleteTodo: (id: number) => void;
-  setMade: (id: number, todo: TodoListType) => void;
+  deleteTodo: (id: number | undefined) => void;
+  setMade: (id: number | undefined, todo: TodoListType) => void;
 };
 type PropsType = MapStateToPropsType & MapDispathPropsType;
 // -----------------------------------------------------------------
@@ -84,25 +84,28 @@ const TodoListContainer: React.FC<PropsType> = ({
   // создаём объект списка дел, передаём его в санку
   const addList = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && title !== '') {
-      const todo = { title: title, id: Math.random(), made: false };
+      const todo = { title: title, made: false };
       sendTodoList(todo);
       setTitle('');
     }
   };
   // пример типизации событий
-  const deleteList = (e: React.MouseEvent<HTMLButtonElement>, id: number) => {
+  const deleteList = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    id: number | undefined
+  ) => {
     e.preventDefault(); // это чтобы при удалении элемента списка, выделенный checkbox не передавался следующему
     deleteTodo(id);
   };
   //изменяем булевое значение чекбокса и передаём объек, в котором изменился made, в санку
-  const handleChange = (id: number) => {
+  const handleChange = (id: number | undefined) => {
     todoList.map((item) => {
-      if (item.id === id) {
+      if (item._id === id) {
         item.made = !item.made;
       }
       return item;
     });
-    const todo = todoList.filter((item) => item.id === id);
+    const todo = todoList.filter((item) => item._id === id);
     const todoObject = todo[0];
     setMade(id, todoObject);
   }; //жуть конечно,но получил этот долбанный объект и передал в санку
@@ -157,7 +160,7 @@ const TodoListContainer: React.FC<PropsType> = ({
                   <ListItemIcon>
                     <Checkbox
                       color="primary"
-                      onChange={() => handleChange(item.id)}
+                      onChange={() => handleChange(item._id)}
                       checked={item.made}
                     />
                   </ListItemIcon>
@@ -177,7 +180,7 @@ const TodoListContainer: React.FC<PropsType> = ({
                   <IconButton
                     edge="end"
                     aria-label="delete"
-                    onClick={(e) => deleteList(e, item.id)}
+                    onClick={(e) => deleteList(e, item._id)}
                   >
                     <DeleteIcon style={{ color: '#9a0036' }} />
                   </IconButton>

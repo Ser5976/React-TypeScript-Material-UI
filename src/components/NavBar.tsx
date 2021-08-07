@@ -10,6 +10,15 @@ import {
   IconButton,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
+import { RootStateType } from '../store/store';
+import { clearSelectNote } from '../store/reducers/notesReducer';
+import { connect } from 'react-redux';
+
+//типизация--------------------------------
+type MapDispathPropsType = {
+  clearSelectNote: () => void;
+};
+//-----------------------------------------
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const NavBar: React.FC = () => {
+const NavBar: React.FC<MapDispathPropsType> = ({ clearSelectNote }) => {
   const classes = useStyles();
   // для меню
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -76,7 +85,12 @@ const NavBar: React.FC = () => {
             JSONPlaceholder/photos
           </Link>
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem
+          onClick={() => {
+            handleClose();
+            clearSelectNote();
+          }}
+        >
           <Link to="/muiForm" className={classes.link}>
             Create a new note
           </Link>
@@ -90,5 +104,11 @@ const NavBar: React.FC = () => {
     </div>
   );
 };
-
-export default NavBar;
+export default connect<
+  unknown,
+  MapDispathPropsType,
+  unknown, // личные пропсы
+  RootStateType
+>(null, {
+  clearSelectNote, //очистить выбранный список записок(очистка форма после выбранного списка)
+})(NavBar);

@@ -9,7 +9,7 @@ export type NoteType = {
   title: string;
   detalis: string;
   category: string;
-  id?: number;
+  _id?: number;
   picture?: any;
 };
 
@@ -55,6 +55,8 @@ const initialState: NotesStateType = {
     title: '',
     detalis: '',
     category: '',
+    _id: undefined,
+    picture: '',
   }, // выбранный список
   isFetching: true, // крутилка
   isFetchError: false, // ошибка
@@ -109,9 +111,14 @@ export const setSelectNote = (data: NoteType): SetSelectNoteActionType => ({
   payload: data,
 });
 // очистить выбранный список
-export const clearSelectNote = (data: NoteType): ClearSelectNoteActionType => ({
+export const clearSelectNote = (): ClearSelectNoteActionType => ({
   type: CLEAR_SELECT_NOTE,
-  payload: data,
+  payload: {
+    title: '',
+    detalis: '',
+    category: '',
+    picture: '',
+  },
 });
 
 // крутилка

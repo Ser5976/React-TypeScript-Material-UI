@@ -1,6 +1,7 @@
 import {
   Card,
   CardHeader,
+  CardMedia,
   Avatar,
   CardContent,
   Typography,
@@ -16,6 +17,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import React, { useState } from 'react';
 import { NoteType } from '../store/reducers/notesReducer';
 import { useHistory } from 'react-router-dom';
+import { ROOT_URL } from '../constant/urls';
 //типизация----------------------
 type PropsType = {
   note: NoteType;
@@ -44,9 +46,14 @@ const useStyles = makeStyles({
   menu: {
     marginTop: '50px',
   },
+  media: {
+    height: 0,
+    paddingTop: '56.25%', // 16:9
+  },
 });
 
 const NoteCard: React.FC<PropsType> = ({ note, removeNote, editNote }) => {
+  // console.log(note.picture);
   const classes = useStyles(note);
   const history = useHistory();
   // для меню
@@ -67,7 +74,7 @@ const NoteCard: React.FC<PropsType> = ({ note, removeNote, editNote }) => {
               aria-label="settings"
               onClick={(event) => {
                 handleOpenMenu(event);
-                editNote(note.id);
+                editNote(note._id);
               }}
             >
               <MoreVertIcon style={{ color: '#1a237e' }} />
@@ -80,6 +87,11 @@ const NoteCard: React.FC<PropsType> = ({ note, removeNote, editNote }) => {
           }
           title={note.title}
           subheader={note.category}
+        />
+        <CardMedia
+          className={classes.media}
+          image={note.picture ? `${ROOT_URL}/${note.picture}` : 'картинка'}
+          title={note.title}
         />
         <CardContent>
           <Typography variant="body2" color="textSecondary" component="p">
@@ -100,7 +112,7 @@ const NoteCard: React.FC<PropsType> = ({ note, removeNote, editNote }) => {
             <EditIcon style={{ color: '#1a237e' }} />
           </IconButton>
 
-          <IconButton onClick={() => removeNote(note.id)}>
+          <IconButton onClick={() => removeNote(note._id)}>
             <DeleteOutlinedIcon style={{ color: '#9a0036' }} />
           </IconButton>
         </MenuItem>

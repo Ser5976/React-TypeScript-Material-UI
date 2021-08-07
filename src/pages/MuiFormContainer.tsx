@@ -1,12 +1,12 @@
 import React from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { NoteType, clearSelectNote } from '../store/reducers/notesReducer';
-import { sendNote } from '../action/notesAction';
+import { sendNote, redactNote } from '../action/notesAction';
 import { RootStateType } from '../store/store';
 import { useHistory } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-//import { DropzoneArea } from 'material-ui-dropzone';// загрузка файлов
+import { DropzoneArea } from 'material-ui-dropzone'; // загрузка файлов
 import {
   Container,
   makeStyles,
@@ -31,8 +31,9 @@ type MapStateToPropsType = {
   selectNote: NoteType;
 };
 type MapDispathPropsType = {
-  sendNote: (data: NoteType) => void;
-  clearSelectNote: (data: NoteType) => void;
+  sendNote: (data: any) => void;
+  clearSelectNote: () => void;
+  redactNote: (id: number | undefined, data: any) => void;
 };
 type PropsType = MapStateToPropsType & MapDispathPropsType;
 
@@ -46,8 +47,8 @@ const position: Array<PositionType> = [
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    marginTop: 75,
-    padding: '50px 25px',
+    marginTop: 25,
+    padding: '25px 25px',
     '& .MuiTextField-root': {
       marginBottom: 20,
       '& fieldset': {
@@ -71,13 +72,13 @@ const useStyles = makeStyles((theme) => ({
     color: '#9a0036',
     marginBottom: 20,
   },
-  /* dropzone: {
+  dropzone: {
     minHeight: 100,
     marginTop: 30,
     border: '0px',
     '& 	.MuiDropzoneArea-text': { color: '#1a237e', fontSize: '1.15rem' },
     '& 	.MuiDropzoneArea-icon': { color: '#1a237e' },
-  }, */
+  },
 }));
 //схема валидации---------------------
 const schema = yup.object().shape({
@@ -90,7 +91,7 @@ const schema = yup.object().shape({
 const MuiFormContainer: React.FC<PropsType> = ({
   sendNote,
   selectNote,
-  clearSelectNote,
+  redactNote,
 }) => {
   // console.log(selectNote);
   const { title, detalis, category } = selectNote;
@@ -104,21 +105,43 @@ const MuiFormContainer: React.FC<PropsType> = ({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
-  console.log(errors);
-
+  //console.log(errors);
+  //создаём объект записки. 2 условия:1.если посылаем файл, то в объект включаем поле picture;
+  //2.если редактируем, запускаем функцию redactNote если новую записку-sendNote
   const onSubmit: SubmitHandler<NoteType> = (data: NoteType): void => {
     console.log('Отправлено:', data);
-    sendNote(data);
-    if (selectNote.id) {
-      const note = {
-        title: '',
-        detalis: '',
-        category: '',
-      };
-      clearSelectNote(note);
+    console.log('Отправлено:', selectNote._id);
+    //console.log(data.picture);
+    const newData: any =
+      data.picture.length !== 0
+        ? {
+            title: data.title,
+            detalis: data.detalis,
+            category: data.category,
+            picture: data.picture[0],
+          }
+        : {
+            title: data.title,
+            detalis: data.detalis,
+            category: data.category,
+          };
+    console.log(newData);
+    let key: any;
+    const formData = new FormData();
+    for (key in newData) {
+      formData.append(key, newData[key]);
     }
+    /*  for (let pair of formData.entries()) {
+      console.log(pair[0] + ',' + pair[1]);
+    }  */
 
-    history.push('/notes');
+    if (selectNote._id) {
+      redactNote(selectNote._id, formData);
+      history.push('/notes');
+    } else {
+      sendNote(formData);
+      history.push('/notes');
+    }
   };
 
   return (
@@ -190,10 +213,9 @@ const MuiFormContainer: React.FC<PropsType> = ({
               </TextField>
             )}
           />
-          {/* <Controller
+          <Controller
             name="picture"
             control={control}
-            defaultValue={[]}
             render={({ field }) => (
               <DropzoneArea
                 {...field}
@@ -201,7 +223,7 @@ const MuiFormContainer: React.FC<PropsType> = ({
                 dropzoneClass={classes.dropzone}
               />
             )}
-            />  к сожалению json-server не работает с файлами*/}
+          />
 
           <Button
             style={{ backgroundColor: '#9a0036', marginTop: '25px' }}
@@ -233,5 +255,6 @@ export default connect<
   RootStateType
 >(mapStateToProps, {
   sendNote, // добавить новую записку
+  redactNote, //редактировать записку
   clearSelectNote, //очистить выбранную записку
 })(MuiFormContainer);

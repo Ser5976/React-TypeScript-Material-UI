@@ -5,9 +5,14 @@ class NoteController {
   async create(req, res) {
     try {
       //  console.log(req.files.picture);
-      const fileName = FileServise.saveFile(req.files.picture);
-      const note = await Note.create({ ...req.body, picture: fileName });
-      res.json(note);
+      if (req.files) {
+        const fileName = FileServise.saveFile(req.files.picture);
+        const note = await Note.create({ ...req.body, picture: fileName });
+        res.json(note);
+      } else {
+        const note = await Note.create(req.body);
+        res.json(note);
+      }
     } catch (e) {
       res.status(500).json(e);
     }
@@ -42,7 +47,7 @@ class NoteController {
       if (!id) {
         res.status(400).json({ massage: 'Id не указан' });
       }
-      if (req.files.picture) {
+      if (req.files) {
         const fileName = FileServise.saveFile(req.files.picture);
         const updateNote = await Note.findByIdAndUpdate(
           id,

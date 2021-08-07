@@ -5,7 +5,6 @@ import { ModelUrls } from '../constant/urls';
 
 import {
   NotesActionType, // типизация всего экшена в notesReducer
-  NoteType, //типизация записки
   setNotes, //запись массива записок в стейт
   setSelectNote, //запись выбранной записки
   setIsFetchingNotes, // крутилка
@@ -36,7 +35,7 @@ export const getNotes = (): ThunkType => {
   };
 };
 // добавить новую записку
-export const sendNote = (data: NoteType): ThunkType => {
+export const sendNote = (data: any): ThunkType => {
   return async (dispatch) => {
     try {
       const response = await axios.post(ModelUrls.NOTES, data);
@@ -58,6 +57,21 @@ export const getSelectNote = (id: number | undefined): ThunkType => {
     } catch (e) {
       console.log(e);
       dispatch(setIsFetchingNotes(false));
+    }
+  };
+};
+
+// изменяет  объек, в котором изменился  made, на серваке
+export const redactNote = (id: number | undefined, data: any): ThunkType => {
+  //console.log(1);
+  return async (dispatch) => {
+    try {
+      await axios.put(ModelUrls.NOTES + id, data);
+      dispatch(getNotes());
+      //  console.log(2);
+    } catch (e) {
+      //console.log(e);
+      dispatch(setFetchErrorNotes(true));
     }
   };
 };

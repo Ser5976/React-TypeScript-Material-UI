@@ -1,7 +1,7 @@
 //let ROOT_URL = 'http://localhost:4000';
-let ROOT_URL = 'http://localhost:5000/api';
+export const ROOT_URL = 'http://localhost:5000';
 
 export const ModelUrls = {
-  TODOLIST: `${ROOT_URL}/todoList/`,
-  NOTES: `${ROOT_URL}/notes/`,
+  TODOLIST: `${ROOT_URL}/api/todoList/`,
+  NOTES: `${ROOT_URL}/api/notes/`,
 };

@@ -2,6 +2,7 @@ const SEARCH_MOVIES_REQUEST = 'SEARCH_MOVIES_REQUEST';
 const SEARCH_MOVIES_SUCCESS = 'SEARCH_MOVIES_SUCCESS';
 const SEARCH_MOVIES_FAILURE = 'SEARCH_MOVIES_FAILURE';
 const SEARCH_SELECTED_MOVIE = 'SEARCH_SELECTED_MOVIE';
+const SET_SEARCH_VALUE = 'SET_SEARCH_VALUE';
 
 // типизация--------------------------------
 //стейта
@@ -37,6 +38,7 @@ export type MoviesStateType = {
   selectedMovie: any;
   loading: boolean;
   errorMessage: string | null;
+  searchValue: string;
 };
 // экшенов
 export type SetMoviesRequestActionType = {
@@ -54,16 +56,22 @@ export type SetSelectedMovieActionType = {
   type: typeof SEARCH_SELECTED_MOVIE;
   payload: any;
 };
+export type SetSearchValueActionType = {
+  type: typeof SET_SEARCH_VALUE;
+  payload: string;
+};
 
 export type MoviesActionType =
   | SetMoviesRequestActionType
   | SetMoviesSuccessActionType
   | SetMoviesFailureActionType
-  | SetSelectedMovieActionType;
+  | SetSelectedMovieActionType
+  | SetSearchValueActionType;
 //-------------------------------------------
 
 const initialState: MoviesStateType = {
   movies: [], //список фильмов
+  searchValue: '', //запрос для получения фильмов
   selectedMovie: {}, //описание выбранного фильма
   loading: true, //крутилка
   errorMessage: null, //ошибка,при отсутствии запроса
@@ -100,6 +108,11 @@ export const moviesReducer = (
         loading: false,
         selectedMovie: action.payload,
       };
+    case SET_SEARCH_VALUE:
+      return {
+        ...state,
+        searchValue: action.payload,
+      };
     default:
       return state;
   }
@@ -109,18 +122,23 @@ export const setMoviesRequest = (): SetMoviesRequestActionType => ({
   type: SEARCH_MOVIES_REQUEST,
 });
 // запись фильмов в стейт
-export const SetMoviesSuccess = (data: any[]): SetMoviesSuccessActionType => ({
+export const setMoviesSuccess = (data: any[]): SetMoviesSuccessActionType => ({
   type: SEARCH_MOVIES_SUCCESS,
   payload: data,
 });
 // записть ошибки
-export const SetMoviesFailure = (data: string): SetMoviesFailureActionType => ({
+export const setMoviesFailure = (data: string): SetMoviesFailureActionType => ({
   type: SEARCH_MOVIES_FAILURE,
   payload: data,
 });
 
 // запись выбранного фильма
-export const SetSelectedMovie = (data: any): SetSelectedMovieActionType => ({
+export const setSelectedMovie = (data: any): SetSelectedMovieActionType => ({
   type: SEARCH_SELECTED_MOVIE,
+  payload: data,
+});
+// запись самого запроса
+export const SetSearchValue = (data: string): SetSearchValueActionType => ({
+  type: SET_SEARCH_VALUE,
   payload: data,
 });

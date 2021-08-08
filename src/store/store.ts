@@ -4,11 +4,13 @@ import thunk from 'redux-thunk';
 import { todoListReducer } from './reducers/todoListReducer';
 import { photosListReducer } from './reducers/photosListReducer';
 import { notesReducer } from './reducers/notesReducer';
+import { moviesReducer } from './reducers/moviesReducer';
 
 const rootReducer = combineReducers({
   todoList: todoListReducer,
   photosList: photosListReducer,
   notes: notesReducer,
+  movies: moviesReducer,
 });
 
 export const store = createStore(

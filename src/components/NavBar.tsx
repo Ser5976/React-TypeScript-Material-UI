@@ -23,6 +23,7 @@ type MapDispathPropsType = {
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    marginBottom: 25,
   },
 
   title: {
@@ -98,6 +99,11 @@ const NavBar: React.FC<MapDispathPropsType> = ({ clearSelectNote }) => {
         <MenuItem onClick={handleClose}>
           <Link to="/notes" className={classes.link}>
             Notes
+          </Link>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <Link to="/movies" className={classes.link}>
+            Movies
           </Link>
         </MenuItem>
       </Menu>

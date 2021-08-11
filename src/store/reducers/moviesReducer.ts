@@ -138,7 +138,7 @@ export const setSelectedMovie = (data: any): SetSelectedMovieActionType => ({
   payload: data,
 });
 // запись самого запроса
-export const SetSearchValue = (data: string): SetSearchValueActionType => ({
+export const setSearchValue = (data: string): SetSearchValueActionType => ({
   type: SET_SEARCH_VALUE,
   payload: data,
 });

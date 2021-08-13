@@ -36,17 +36,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const MoviesContainer: React.FC<PropsType> = ({
-  searchValue,
-  movies,
-  loading,
-  errorMessage,
-  getMovies,
-  getSearchMovies,
-  setSearchValue,
+  searchValue, //сам запрос
+  movies, //массив фильмов
+  loading, // крутилка
+  errorMessage, // если не  нашли информации по запросу
+  getMovies, // базовый запрос фильмов
+  getSearchMovies, //запрос фильмов
+  setSearchValue, // запись запроса в стейт
 }) => {
   const classes = useStyles();
   useEffect(() => {
-    getMovies(); // базовый запрос фильмов
+    if (movies.length !== 0) {
+      return;
+    } else {
+      getMovies();
+    }
     // eslint-disable-next-line
   }, []);
   const callSearch = () => {

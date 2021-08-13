@@ -60,7 +60,7 @@ export const getSelectedMovies = (imdbID: string): ThunkType => {
       const response = await axios.get(
         `${MOVIE_API_URL.ROOT_URL}?i=${imdbID}&apikey=${MOVIE_API_URL.KEY}`
       );
-      console.log(response.data);
+      //console.log(response.data);
       dispatch(setSelectedMovie(response.data));
     } catch (e) {
       console.log(e);

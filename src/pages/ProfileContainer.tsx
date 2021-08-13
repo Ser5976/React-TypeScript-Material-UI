@@ -65,8 +65,9 @@ const MoviesContainer: React.FC<PropsType> = ({
     getSelectedMovies(imdbID); // базовый запрос фильмов
     // eslint-disable-next-line
   }, []);
-  const rat = [...Ratings];
-  console.log(rat);
+  let rat: any;
+  Ratings ? (rat = [...Ratings]) : (rat = []);
+  //console.log(rat);
   return (
     <Container>
       <Typography align="center" className={classes.textTitle}>
@@ -113,7 +114,7 @@ const MoviesContainer: React.FC<PropsType> = ({
           <Typography style={{ marginTop: '25px' }}>
             <span className={classes.bold}>Ratings</span>:
           </Typography>
-          {rat.map((item, index) => {
+          {rat.map((item: any, index: any) => {
             return (
               <Typography style={{ marginLeft: '25px' }} key={index}>
                 <span className={classes.bold}>{item.Source}</span>:

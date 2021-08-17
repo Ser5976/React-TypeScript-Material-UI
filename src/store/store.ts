@@ -2,13 +2,13 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import { todoListReducer } from './reducers/todoListReducer';
-import { photosListReducer } from './reducers/photosListReducer';
+import { postsReducer } from './reducers/postsReducer';
 import { notesReducer } from './reducers/notesReducer';
 import { moviesReducer } from './reducers/moviesReducer';
 
 const rootReducer = combineReducers({
   todoList: todoListReducer,
-  photosList: photosListReducer,
+  posts: postsReducer,
   notes: notesReducer,
   movies: moviesReducer,
 });

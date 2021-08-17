@@ -1,26 +1,25 @@
-const SET_PHOTOS_LIST = 'SET_PHOTOS_LIST';
+const SET_POSTS = 'SET_POSTS';
 const IS_FETCHING = 'IS_FETCHING';
 const SET_FETCH_ERROR = 'SET_FETCH_ERROR';
 
 //типизация--------------------------------
 //----------стейта-------------------------
-export type PhotosListType = {
-  albumId: number;
+export type PostsType = {
   id: number;
   title: string;
-  url: string;
-  thumbnailUrl: string;
+  userId: number;
+  body: string;
 };
 
-export type PhotosListStateType = {
-  photosList: PhotosListType[];
+export type PostsStateType = {
+  posts: PostsType[];
   isFetching: boolean;
   isFetchError: boolean;
 };
 //------- action---------------------------
-export type setPhotosListActionType = {
-  type: typeof SET_PHOTOS_LIST;
-  payload: PhotosListType[];
+export type setPostsActionType = {
+  type: typeof SET_POSTS;
+  payload: PostsType[];
 };
 export type setIsFetchingActionType = {
   type: typeof IS_FETCHING;
@@ -30,28 +29,25 @@ export type setFetchErrorActionType = {
   type: typeof SET_FETCH_ERROR;
   payload: boolean;
 };
-export type PhotosAtionType =
-  | setPhotosListActionType
+export type PostsAtionType =
+  | setPostsActionType
   | setIsFetchingActionType
   | setFetchErrorActionType;
 
 //-----------------------------------------
 
-const initialState: PhotosListStateType = {
-  photosList: [],
+const initialState: PostsStateType = {
+  posts: [],
   isFetching: true,
   isFetchError: false,
 };
 
-export const photosListReducer = (
-  state = initialState,
-  action: PhotosAtionType
-) => {
+export const postsReducer = (state = initialState, action: PostsAtionType) => {
   switch (action.type) {
-    case SET_PHOTOS_LIST:
+    case SET_POSTS:
       return {
         ...state,
-        photosList: action.payload, //.filter((item) => item.id! < 11),  из 5000 записываем только 10(метод  filter(крутяк)),это если не установили лимит
+        posts: action.payload,
         isFetching: false,
       };
     case IS_FETCHING:
@@ -69,11 +65,9 @@ export const photosListReducer = (
       return state;
   }
 };
-// записывает список фоток в стейт
-export const setPhotosList = (
-  data: PhotosListType[]
-): setPhotosListActionType => ({
-  type: SET_PHOTOS_LIST,
+// записывает посты в стейт
+export const setPosts = (data: PostsType[]): setPostsActionType => ({
+  type: SET_POSTS,
   payload: data,
 });
 // крутилка

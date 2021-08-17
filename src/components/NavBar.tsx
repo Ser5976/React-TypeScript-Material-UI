@@ -82,8 +82,8 @@ const NavBar: React.FC<MapDispathPropsType> = ({ clearSelectNote }) => {
           </Link>
         </MenuItem>
         <MenuItem onClick={handleClose}>
-          <Link to="/photosList" className={classes.link}>
-            JSONPlaceholder/photos
+          <Link to="/posts" className={classes.link}>
+            Posts
           </Link>
         </MenuItem>
         <MenuItem

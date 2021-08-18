@@ -1,6 +1,7 @@
 const SET_POSTS = 'SET_POSTS';
 const IS_FETCHING = 'IS_FETCHING';
 const SET_FETCH_ERROR = 'SET_FETCH_ERROR';
+const SET_TOTAL_COUNT = 'SET_TOTAL_COUNT';
 
 //типизация--------------------------------
 //----------стейта-------------------------
@@ -15,6 +16,8 @@ export type PostsStateType = {
   posts: PostsType[];
   isFetching: boolean;
   isFetchError: boolean;
+  totalCount: number;
+  limit: number;
 };
 //------- action---------------------------
 export type setPostsActionType = {
@@ -29,17 +32,24 @@ export type setFetchErrorActionType = {
   type: typeof SET_FETCH_ERROR;
   payload: boolean;
 };
+export type setTotalCountActionType = {
+  type: typeof SET_TOTAL_COUNT;
+  payload: number;
+};
 export type PostsAtionType =
   | setPostsActionType
   | setIsFetchingActionType
-  | setFetchErrorActionType;
+  | setFetchErrorActionType
+  | setTotalCountActionType;
 
 //-----------------------------------------
 
 const initialState: PostsStateType = {
-  posts: [],
-  isFetching: true,
-  isFetchError: false,
+  posts: [], //массив постов
+  isFetching: true, // крутилка
+  isFetchError: false, //ошибка
+  totalCount: 0, // общее количество постов(для пагинации)
+  limit: 10, // количество постов на станице
 };
 
 export const postsReducer = (state = initialState, action: PostsAtionType) => {
@@ -60,6 +70,11 @@ export const postsReducer = (state = initialState, action: PostsAtionType) => {
         ...state,
         isFetchError: action.payload,
       };
+    case SET_TOTAL_COUNT:
+      return {
+        ...state,
+        totalCount: action.payload,
+      };
 
     default:
       return state;
@@ -68,6 +83,11 @@ export const postsReducer = (state = initialState, action: PostsAtionType) => {
 // записывает посты в стейт
 export const setPosts = (data: PostsType[]): setPostsActionType => ({
   type: SET_POSTS,
+  payload: data,
+});
+// записываем общее количество постов(для пагинации)
+export const setTotalCount = (data: number): setTotalCountActionType => ({
+  type: SET_TOTAL_COUNT,
   payload: data,
 });
 // крутилка

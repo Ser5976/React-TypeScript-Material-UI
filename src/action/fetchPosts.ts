@@ -7,7 +7,10 @@ import {
   setFetchError, // изменяет булевое значение ошибок
   setIsFetching, //крутилка
   PostsAtionType, // общая типизация экшенов
+  setTotalCount, // общее количество постов
 } from '../store/reducers/postsReducer';
+import { POSTS_API_URL } from '../constant/urls';
+
 // типизация санки
 export type ThunkType = ThunkAction<
   Promise<void>,
@@ -16,14 +19,15 @@ export type ThunkType = ThunkAction<
   PostsAtionType
 >;
 // запрос для получения photos
-export const fetchPosts = (): ThunkType => {
+export const fetchPosts = (pageNumber: number): ThunkType => {
   return async (dispatch) => {
     try {
       dispatch(setIsFetching(true));
       const response = await axios.get(
-        'https://jsonplaceholder.typicode.com/posts'
+        `${POSTS_API_URL.POSTS}/?_page=${pageNumber}&_limit=10`
       );
-      console.log(response.data);
+      console.log(response);
+      dispatch(setTotalCount(response.headers['x-total-count']));
       dispatch(setPosts(response.data));
     } catch (e) {
       console.log(e);

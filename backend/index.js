@@ -2,9 +2,10 @@ import express from 'express';
 import mongoose from 'mongoose';
 import routerNote from './notes/routerNote.js';
 import routerTodolist from './todoList/routerTodoList.js';
+import routerAuth from './auth/routerAuth.js';
 import fileUpload from 'express-fileupload';
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 const DB_URL = `mongodb+srv://user:user@cluster0.k9hfy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 
@@ -26,6 +27,7 @@ app.use(fileUpload({}));
 app.use(express.static('static'));
 app.use('/api', routerNote);
 app.use('/api', routerTodolist);
+app.use('/auth', routerAuth);
 
 async function startApp() {
   try {

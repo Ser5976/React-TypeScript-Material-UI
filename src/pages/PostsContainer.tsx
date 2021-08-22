@@ -7,11 +7,6 @@ import { connect } from 'react-redux';
 import PaginationButtons from '../components/PaginationButtons';
 
 //типизация---------------------------------------------------------------------
-// типизация селекта
-type Position = {
-  value: string;
-  name: string;
-};
 // типизация пропсов
 type MapStateToPropsType = {
   posts: PostsType[];

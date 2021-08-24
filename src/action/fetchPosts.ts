@@ -24,7 +24,7 @@ export const fetchPosts = (pageNumber: number): ThunkType => {
     try {
       dispatch(setIsFetching(true));
       const response = await axios.get(
-        `${POSTS_API_URL.POSTS}/?_page=${pageNumber}&_limit=10`
+        `${POSTS_API_URL.POSTS}?_page=${pageNumber}&_limit=10`
       );
       console.log(response);
       dispatch(setTotalCount(response.headers['x-total-count']));
@@ -36,4 +36,4 @@ export const fetchPosts = (pageNumber: number): ThunkType => {
     }
   };
 };
-// Другой способ типизации санки: просто типизировать dispatch ...async (dispatch:Dispatch<PhotosAtionType>).....
+// Другой способ типизации санки: просто типизировать dispatch ...async (dispatch:Dispatch<PhotosAtionType>).....'Access-Control-Allow-Origin'

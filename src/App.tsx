@@ -7,6 +7,8 @@ import PostsCotainer from './pages/PostsContainer';
 import MuiFormContainer from './pages/MuiFormContainer';
 import MoviesContainer from './pages/MoviesContainer';
 import ProfileContainer from './pages/ProfileContainer';
+import UserContainer from './pages/UserContainer';
+import AuthContainer from './pages/AuthContainer';
 
 const App: React.FC = () => {
   return (
@@ -19,6 +21,8 @@ const App: React.FC = () => {
         <Route component={NotesContainer} path="/notes" />
         <Route component={MoviesContainer} path="/movies" />
         <Route component={ProfileContainer} path="/profile/:imdbID" />
+        <Route component={UserContainer} path="/users" />
+        <Route component={AuthContainer} path="/auth" />
 
         <Redirect to="/" />
       </Switch>

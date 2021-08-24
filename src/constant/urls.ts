@@ -4,6 +4,9 @@ export const ROOT_URL_JP = 'https://jsonplaceholder.typicode.com';
 export const ModelUrls = {
   TODOLIST: `${ROOT_URL}/api/todoList/`,
   NOTES: `${ROOT_URL}/api/notes/`,
+  USERS: `${ROOT_URL}/auth/users`,
+  REGISTRATION: `${ROOT_URL}/auth/registration`,
+  LOGIN: `${ROOT_URL}/auth/login`,
 };
 export const MOVIE_API_URL = {
   ROOT_URL: 'https://www.omdbapi.com/',

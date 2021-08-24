@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -8,6 +8,7 @@ import {
   MenuItem,
   makeStyles,
   IconButton,
+  Button,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { RootStateType } from '../store/store';
@@ -23,11 +24,11 @@ type MapDispathPropsType = {
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    marginBottom: 25,
   },
 
   title: {
     flexGrow: 1,
+    marginLeft: 50,
   },
   menu: {
     marginTop: '50px',
@@ -40,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 const NavBar: React.FC<MapDispathPropsType> = ({ clearSelectNote }) => {
   const classes = useStyles();
+  const history = useHistory();
   // для меню
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -53,9 +55,6 @@ const NavBar: React.FC<MapDispathPropsType> = ({ clearSelectNote }) => {
     <div className={classes.root}>
       <AppBar position="static" style={{ background: '#1a237e' }}>
         <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            React-TypeScript-Material-UI
-          </Typography>
           <IconButton
             edge="start"
             color="inherit"
@@ -65,6 +64,13 @@ const NavBar: React.FC<MapDispathPropsType> = ({ clearSelectNote }) => {
           >
             <MenuIcon />
           </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            React-TypeScript-Material-UI
+          </Typography>
+
+          <Button color="inherit" onClick={() => history.push('/auth')}>
+            Войти
+          </Button>
         </Toolbar>
       </AppBar>
       <Menu
@@ -104,6 +110,11 @@ const NavBar: React.FC<MapDispathPropsType> = ({ clearSelectNote }) => {
         <MenuItem onClick={handleClose}>
           <Link to="/movies" className={classes.link}>
             Movies
+          </Link>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <Link to="/users" className={classes.link}>
+            Users
           </Link>
         </MenuItem>
       </Menu>

@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 850,
     margin: `${theme.spacing(1)}px auto`,
+    backgroundColor: '#ffebee',
   },
   grid: {
     maxWidth: 850,

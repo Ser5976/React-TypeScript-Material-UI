@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import {
   AppBar,
@@ -13,12 +13,21 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import { RootStateType } from '../store/store';
 import { clearSelectNote } from '../store/reducers/notesReducer';
+import {
+  setAuth,
+  SetAuthActionType,
+  AuthReducerType,
+} from '../store/reducers/userReducer';
+import MenuAuthNavBar from './MenuAuthNavBar';
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
+type MapStateToPropsType = { auth: AuthReducerType };
 type MapDispathPropsType = {
   clearSelectNote: () => void;
+  setAuth: (value: AuthReducerType) => SetAuthActionType;
 };
+type PropsType = MapDispathPropsType & MapStateToPropsType;
 //-----------------------------------------
 
 const useStyles = makeStyles((theme) => ({
@@ -39,9 +48,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const NavBar: React.FC<MapDispathPropsType> = ({ clearSelectNote }) => {
+const NavBar: React.FC<PropsType> = ({ clearSelectNote, auth, setAuth }) => {
   const classes = useStyles();
   const history = useHistory();
+  const receiveToken: string | null = sessionStorage.getItem('token')
+    ? sessionStorage.getItem('token')
+    : null; //получение токена из sessionStorage
+  console.log(receiveToken);
+  useEffect(() => {
+    const authorizationData: AuthReducerType = {
+      token: sessionStorage.getItem('token'),
+      username: sessionStorage.getItem('username'),
+    };
+    setAuth(authorizationData);
+    // eslint-disable-next-line
+  }, []);
   // для меню
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -67,10 +88,24 @@ const NavBar: React.FC<MapDispathPropsType> = ({ clearSelectNote }) => {
           <Typography variant="h6" className={classes.title}>
             React-TypeScript-Material-UI
           </Typography>
-
-          <Button color="inherit" onClick={() => history.push('/auth')}>
-            Войти
-          </Button>
+          {auth.token ? (
+            <>
+              <Button color="inherit">{auth.username}</Button>
+              <MenuAuthNavBar setAuth={setAuth} />
+            </>
+          ) : (
+            <>
+              <Button color="inherit" onClick={() => history.push('/auth')}>
+                Войти
+              </Button>
+              <Button
+                color="inherit"
+                onClick={() => history.push('/registration')}
+              >
+                Зарегистрироваться
+              </Button>
+            </>
+          )}
         </Toolbar>
       </AppBar>
       <Menu
@@ -121,11 +156,17 @@ const NavBar: React.FC<MapDispathPropsType> = ({ clearSelectNote }) => {
     </div>
   );
 };
+const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
+  return {
+    auth: state.users.auth, //авторизация
+  };
+};
 export default connect<
-  unknown,
+  MapStateToPropsType,
   MapDispathPropsType,
   unknown, // личные пропсы
   RootStateType
->(null, {
+>(mapStateToProps, {
   clearSelectNote, //очистить выбранный список записок(очистка форма после выбранного списка)
+  setAuth, //запись токена в стейт
 })(NavBar);

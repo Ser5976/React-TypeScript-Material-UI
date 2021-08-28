@@ -12,7 +12,11 @@ import { useHistory } from 'react-router-dom';
 //схема валидации---------------------
 const schema = yup.object().shape({
   username: yup.string().required('Поле обязательное для заполнения'),
-  password: yup.string().required('Поле обязательное для заполнения'),
+  password: yup
+    .string()
+    .required('Поле обязательное для заполнения')
+    .min(3, 'Минимальное количество символов 3')
+    .max(7, 'Максимальное количество символов 7'),
 });
 //-----------------------------------------
 
@@ -23,7 +27,7 @@ export type AuthType = {
 };
 // типизация пропсов
 type PropsType = {
-  authorization: (value: AuthType) => void;
+  registration: (value: AuthType) => void;
 };
 //--------------------------------------------
 
@@ -37,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FormLogin: React.FC<PropsType> = ({ authorization }) => {
+const FormRegistration: React.FC<PropsType> = ({ registration }) => {
   const history = useHistory();
   const classes = useStyles();
   const {
@@ -51,7 +55,7 @@ const FormLogin: React.FC<PropsType> = ({ authorization }) => {
   // получение данных из форма и отправка на сервак
   const onSubmit: SubmitHandler<AuthType> = (data: AuthType): void => {
     console.log('Отправлено:', data);
-    authorization(data); //отправка на сервак
+    registration(data); //отправка на сервак
   };
 
   return (
@@ -108,16 +112,12 @@ const FormLogin: React.FC<PropsType> = ({ authorization }) => {
       </Button>
       <Grid container>
         <Grid item>
-          <Link
-            href="#"
-            variant="body2"
-            onClick={() => history.push('/registration')}
-          >
-            {'Нет учетной записи? Зарегистрироваться'}
+          <Link href="#" variant="body2" onClick={() => history.push('/auth')}>
+            {'Уже есть аккаунт? Войти'}
           </Link>
         </Grid>
       </Grid>
     </form>
   );
 };
-export default FormLogin;
+export default FormRegistration;

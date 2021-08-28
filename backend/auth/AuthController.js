@@ -36,7 +36,7 @@ class AuthController {
       if (candidate) {
         return res
           .status(400)
-          .json({ massage: 'Пользователь с таким именем уже существует' });
+          .json({ message: 'Пользователь с таким именем уже существует' });
       }
       // кэширование пароля
       const hashPassword = bcrypt.hashSync(password, 7);
@@ -46,7 +46,7 @@ class AuthController {
       res.json({ user, token });
     } catch (e) {
       console.log(e);
-      res.status(400).json({ massage: 'Ошибка регистрации' });
+      res.status(400).json({ message: 'Ошибка регистрации' });
     }
   }
 
@@ -58,20 +58,20 @@ class AuthController {
       if (!user) {
         return res
           .status(400)
-          .json({ massage: `Пользователь ${username} не найден` });
+          .json({ message: `Пользователь ${username} не найден` });
       }
       // проверка пароля
       const validPassword = bcrypt.compareSync(password, user.password);
       if (!validPassword) {
-        return res.status(400).json({ massage: `Пароль неверный` });
+        return res.status(400).json({ message: `Пароль неверный` });
       }
       // console.log(user);
       //генерация JWT токина
       const token = generateAccessToken(user._id, user.username);
-      return res.json({ token });
+      return res.json({ token, username });
     } catch (e) {
       console.log(e);
-      res.status(400).json({ massage: 'Ошибка авторизации' });
+      res.status(400).json({ message: 'Ошибка авторизации' });
     }
   }
 
@@ -82,7 +82,7 @@ class AuthController {
       if (!authorizationHeader) {
         return res
           .status(400)
-          .json({ massage: `Пользователь  не авторизован` });
+          .json({ message: `Пользователь  не авторизован` });
       }
       // console.log(authorizationHeader);
       // получение  токена из заголовка для проверки валидности
@@ -90,14 +90,14 @@ class AuthController {
       if (!accessToken) {
         return res
           .status(400)
-          .json({ massage: `Пользователь  не авторизован` });
+          .json({ message: `Пользователь  не авторизован` });
       }
       //console.log(accessToken);
       //проверка токена на валидность
       const userData = validationAccessToken(accessToken);
       console.log(userData);
       if (!userData) {
-        return res.status(400).json({ massage: 'Токен не валиден' });
+        return res.status(400).json({ message: 'Токен не валиден' });
       }
       const users = await User.find();
       res.json(users);

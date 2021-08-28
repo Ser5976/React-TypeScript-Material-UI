@@ -3,7 +3,6 @@ import { ThunkAction } from 'redux-thunk';
 import { RootStateType } from '../store/store';
 import {
   setUsers,
-  setToken,
   setLoading,
   SetActionType,
 } from '../store/reducers/userReducer';
@@ -18,13 +17,12 @@ type ThunkType = ThunkAction<
 >;
 // запрос для получения пользователей
 export const getUsers = (): ThunkType => {
-  return async (dispatch, getState) => {
-    const token = getState().users.token;
+  return async (dispatch) => {
     try {
       dispatch(setLoading());
       const response = await axios.get(ModelUrls.USERS, {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMjE2YzJjNmFmMzBlMmYyNDEwMTg2MCIsInVzZXJuYW1lIjoidXNlcjExIiwiaWF0IjoxNjI5ODMxMTI4LCJleHAiOjE2Mjk5MTc1Mjh9.YG8NwcjMioiz37D6Dnr4XF_n-3N0L80hhFdxXHKsxhU`,
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
         },
       });
       console.log(response.data);

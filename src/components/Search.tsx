@@ -4,7 +4,9 @@ import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import DirectionsIcon from '@material-ui/icons/Directions';
+import SearchIcon from '@material-ui/icons/Search';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import { SetSearchValueActionType } from '../store/reducers/moviesReducer';
 
 //типизация----------------------------------
@@ -22,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       width: '75%',
-      margin: 'auto',
+      margin: '25px auto',
     },
     input: {
       marginLeft: theme.spacing(1),
@@ -33,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 10,
     },
     divider: {
-      height: 28,
+      height: 45,
       margin: 4,
     },
   })
@@ -47,25 +49,33 @@ const Search: React.FC<PropsType> = ({
   const classes = useStyles();
 
   return (
-    <Paper className={classes.root}>
-      <InputBase
+    <div className={classes.root}>
+      <TextField
+        id="outlined-basic"
+        label="Поиск"
+        variant="outlined"
         className={classes.input}
         placeholder="название фильма на английском языке"
         inputProps={{ 'aria-label': 'search google maps' }}
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Divider className={classes.divider} orientation="vertical" />
+              <IconButton
+                color="primary"
+                className={classes.iconButton}
+                aria-label="directions"
+                onClick={callSearch}
+              >
+                <SearchIcon />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
       />
-
-      <Divider className={classes.divider} orientation="vertical" />
-      <IconButton
-        color="primary"
-        className={classes.iconButton}
-        aria-label="directions"
-        onClick={callSearch}
-      >
-        <DirectionsIcon />
-      </IconButton>
-    </Paper>
+    </div>
   );
 };
 export default Search;

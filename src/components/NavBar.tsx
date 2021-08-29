@@ -16,7 +16,9 @@ import { clearSelectNote } from '../store/reducers/notesReducer';
 import {
   setAuth,
   SetAuthActionType,
+  setPathName,
   AuthReducerType,
+  SetPathNameActionType,
 } from '../store/reducers/userReducer';
 import MenuAuthNavBar from './MenuAuthNavBar';
 import { connect } from 'react-redux';
@@ -26,6 +28,7 @@ type MapStateToPropsType = { auth: AuthReducerType };
 type MapDispathPropsType = {
   clearSelectNote: () => void;
   setAuth: (value: AuthReducerType) => SetAuthActionType;
+  setPathName: (value: string) => SetPathNameActionType;
 };
 type PropsType = MapDispathPropsType & MapStateToPropsType;
 //-----------------------------------------
@@ -48,13 +51,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const NavBar: React.FC<PropsType> = ({ clearSelectNote, auth, setAuth }) => {
+const NavBar: React.FC<PropsType> = ({
+  clearSelectNote,
+  auth,
+  setAuth,
+  setPathName,
+}) => {
   const classes = useStyles();
   const history = useHistory();
-  const receiveToken: string | null = sessionStorage.getItem('token')
-    ? sessionStorage.getItem('token')
-    : null; //получение токена из sessionStorage
-  console.log(receiveToken);
+
   useEffect(() => {
     const authorizationData: AuthReducerType = {
       token: sessionStorage.getItem('token'),
@@ -70,6 +75,14 @@ const NavBar: React.FC<PropsType> = ({ clearSelectNote, auth, setAuth }) => {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  // Запомнить последний клик
+  const rememberLastEvent = (e: any) => {
+    let pathname = e.target.pathname;
+    console.log(pathname);
+
+    setPathName(pathname);
   };
 
   return (
@@ -147,7 +160,12 @@ const NavBar: React.FC<PropsType> = ({ clearSelectNote, auth, setAuth }) => {
             Movies
           </Link>
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem
+          onClick={(e) => {
+            handleClose();
+            rememberLastEvent(e);
+          }}
+        >
           <Link to="/users" className={classes.link}>
             Users
           </Link>
@@ -169,4 +187,5 @@ export default connect<
 >(mapStateToProps, {
   clearSelectNote, //очистить выбранный список записок(очистка форма после выбранного списка)
   setAuth, //запись токена в стейт
+  setPathName, //запись последнего клика
 })(NavBar);

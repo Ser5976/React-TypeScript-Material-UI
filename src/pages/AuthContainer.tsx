@@ -20,7 +20,7 @@ type MapStateToPropsType = {
   errorMessage: string | null;
 };
 type MapDispathPropsType = {
-  authorization: (value: AuthType) => void;
+  authorization: (value: AuthType, history: any) => void;
 };
 type PropsType = MapDispathPropsType & MapStateToPropsType;
 
@@ -53,8 +53,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AuthContainer: React.FC<PropsType> = ({
-  authorization,
-  errorMessage,
+  authorization, //отправка авторизации на сервак
+  errorMessage, // ошибка авторизации
 }) => {
   const classes = useStyles();
 

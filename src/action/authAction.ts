@@ -18,14 +18,16 @@ export type ThunkType = ThunkAction<
   SetActionType
 >;
 // авторизация
-export const authorization = (value: AuthType): ThunkType => {
-  return async (dispatch) => {
+export const authorization = (value: AuthType, history: any): ThunkType => {
+  return async (dispatch, getState) => {
+    const pathname = getState().users.pathname; //нужно для того, чтобы вернуться на страницу, по последнему клику
     try {
       const { data } = await axios.post(ModelUrls.LOGIN, value);
       console.log(data);
       dispatch(setAuth(data));
       sessionStorage.setItem('token', data.token);
       sessionStorage.setItem('username', data.username);
+      history.push(pathname);
     } catch (e) {
       console.log(e.message);
       dispatch(setErrorMessage(e.message));
@@ -33,8 +35,9 @@ export const authorization = (value: AuthType): ThunkType => {
   };
 };
 //регистрация
-export const registration = (value: AuthType): ThunkType => {
-  return async (dispatch) => {
+export const registration = (value: AuthType, history: any): ThunkType => {
+  return async (dispatch, getState) => {
+    const pathname = getState().users.pathname; //нужно для того, чтобы вернуться на страницу, по последнему клику
     try {
       const { data } = await axios.post(ModelUrls.REGISTRATION, value);
       const authorizationData: AuthReducerType = {
@@ -45,6 +48,7 @@ export const registration = (value: AuthType): ThunkType => {
       sessionStorage.setItem('token', data.token);
       sessionStorage.setItem('username', data.user.username);
       dispatch(setAuth(authorizationData));
+      history.push(pathname);
     } catch (e) {
       console.log(e.message);
       dispatch(setErrorMessage(e.message));

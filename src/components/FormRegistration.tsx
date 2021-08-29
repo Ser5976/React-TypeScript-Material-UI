@@ -27,7 +27,7 @@ export type AuthType = {
 };
 // типизация пропсов
 type PropsType = {
-  registration: (value: AuthType) => void;
+  registration: (value: AuthType, history: any) => void;
 };
 //--------------------------------------------
 
@@ -55,7 +55,7 @@ const FormRegistration: React.FC<PropsType> = ({ registration }) => {
   // получение данных из форма и отправка на сервак
   const onSubmit: SubmitHandler<AuthType> = (data: AuthType): void => {
     console.log('Отправлено:', data);
-    registration(data); //отправка на сервак
+    registration(data, history); //отправка на сервак ,history н для того, чтобы вернуться на страницу, по последнему клику
   };
 
   return (

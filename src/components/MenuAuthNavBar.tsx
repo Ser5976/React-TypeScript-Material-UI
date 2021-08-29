@@ -1,15 +1,13 @@
 import React from 'react';
-
 import IconButton from '@material-ui/core/IconButton';
-
 import AccountCircle from '@material-ui/icons/AccountCircle';
-
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import {
   SetAuthActionType,
   AuthReducerType,
 } from '../store/reducers/userReducer';
+import { useHistory } from 'react-router-dom';
 
 //типизация--------------------------------
 type PropsType = {
@@ -18,6 +16,7 @@ type PropsType = {
 //-----------------------------------------
 
 const MenuAuthNavBar: React.FC<PropsType> = ({ setAuth }) => {
+  const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -69,6 +68,7 @@ const MenuAuthNavBar: React.FC<PropsType> = ({ setAuth }) => {
             sessionStorage.removeItem('token'); //удаляем токен из sessionStorage
             sessionStorage.removeItem('username'); //удаляем username из sessionStorage
             clearAuthorization();
+            history.push('/');
           }}
         >
           Выйти

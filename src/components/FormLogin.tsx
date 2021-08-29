@@ -23,7 +23,7 @@ export type AuthType = {
 };
 // типизация пропсов
 type PropsType = {
-  authorization: (value: AuthType) => void;
+  authorization: (value: AuthType, history: any) => void;
 };
 //--------------------------------------------
 
@@ -51,7 +51,7 @@ const FormLogin: React.FC<PropsType> = ({ authorization }) => {
   // получение данных из форма и отправка на сервак
   const onSubmit: SubmitHandler<AuthType> = (data: AuthType): void => {
     console.log('Отправлено:', data);
-    authorization(data); //отправка на сервак
+    authorization(data, history); //передача данных из формы авторизации на сервак(data),history нужно для того, чтобы вернуться на страницу, по последнему клику
   };
 
   return (

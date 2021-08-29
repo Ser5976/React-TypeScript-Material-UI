@@ -1,6 +1,6 @@
 const SET_USERS = 'SET_USERS';
 const SET_AUTH = 'SET_AUTH';
-//const SET_USER_NAME='SET_USER_NAME'
+const SET_PATH_NAME = 'SET_PATH_NAME';
 const SET_LOADING = 'SET_LOADING';
 const SET_ERROR_MESSAGE = 'SET_ERROR_MESSAGE';
 
@@ -17,8 +17,7 @@ export type AuthReducerType = {
 export type InitialStateType = {
   users: UserType[];
   auth: AuthReducerType;
-  //token: string | null;
-  // username: string | null;
+  pathname: string;
   loading: boolean;
   errorMessage: string | null;
 };
@@ -31,10 +30,10 @@ export type SetAuthActionType = {
   type: typeof SET_AUTH;
   payload: AuthReducerType;
 };
-/* export type SetUserNameActionType = {
-    type: typeof SET_USER_NAME;
-    payload: string | null;
-  }; */
+export type SetPathNameActionType = {
+  type: typeof SET_PATH_NAME;
+  payload: string;
+};
 export type SetLoadingActionType = {
   type: typeof SET_LOADING;
 };
@@ -47,15 +46,15 @@ export type SetActionType =
   | SetUsersActionType
   | SetAuthActionType
   | SetLoadingActionType
-  | SetErrorMessageActionType;
+  | SetErrorMessageActionType
+  | SetPathNameActionType;
 
 //-------------------------------------------
 
 const initialState: InitialStateType = {
   users: [], //массив пользователей
-  auth: { username: null, token: null },
-  //token: null, //токен
-  // username:null,// пользователь
+  auth: { username: null, token: null }, //авторизация
+  pathname: '/', //для записи путя к последнему клику
   loading: false, //крутилка
   errorMessage: null, // ошибка авторизации
 };
@@ -77,12 +76,11 @@ export const userReducer = (
         auth: action.payload,
         errorMessage: null,
       };
-    /* case SET_USER_NAME:
+    case SET_PATH_NAME:
       return {
         ...state,
-        username: action.payload,
-        errorMessage: null,
-      }; */
+        pathname: action.payload,
+      };
     case SET_LOADING:
       return {
         ...state,
@@ -103,9 +101,14 @@ export const setUsers = (data: UserType[]): SetUsersActionType => ({
   type: SET_USERS,
   payload: data,
 });
-//запись токена
+//запись авторизация
 export const setAuth = (value: AuthReducerType): SetAuthActionType => ({
   type: SET_AUTH,
+  payload: value,
+});
+//запись последнего клика
+export const setPathName = (value: string): SetPathNameActionType => ({
+  type: SET_PATH_NAME,
   payload: value,
 });
 // крутилка

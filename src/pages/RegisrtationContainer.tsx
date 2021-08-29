@@ -17,7 +17,7 @@ import { registration } from '../action/authAction';
 // типизация пропсов
 type MapStateToPropsType = { errorMessage: string | null };
 type MapDispathPropsType = {
-  registration: (value: AuthType) => void;
+  registration: (value: AuthType, history: any) => void;
 };
 type PropsType = MapDispathPropsType & MapStateToPropsType;
 

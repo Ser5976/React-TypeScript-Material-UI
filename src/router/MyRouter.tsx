@@ -6,10 +6,10 @@ import PostsCotainer from '../pages/PostsContainer';
 import MuiFormContainer from '../pages/MuiFormContainer';
 import MoviesContainer from '../pages/MoviesContainer';
 import ProfileContainer from '../pages/ProfileContainer';
-import UserContainer from '../pages/UserContainer';
 import AuthContainer from '../pages/AuthContainer';
 import RistrationContainer from '../pages/RegisrtationContainer';
 import PrivateRoute from './PrivateRouters';
+import UsersContainer from '../pages/UsersContainer';
 
 const MyRouter: React.FC = () => {
   return (
@@ -22,7 +22,7 @@ const MyRouter: React.FC = () => {
       <Route component={ProfileContainer} path="/profile/:imdbID" />
       <Route component={AuthContainer} path="/auth" />
       <Route component={RistrationContainer} path="/registration" />
-      <PrivateRoute path="/users" component={UserContainer} />
+      <PrivateRoute path="/users" component={UsersContainer} />
 
       <Redirect to="/" />
     </Switch>

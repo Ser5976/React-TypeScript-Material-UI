@@ -23,11 +23,11 @@ app.use(cors(options));
   res.header('Access-Control-Allow-Methods', 'POST,PUT,PATCH,DELETE');
   res.header(
     'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
+    'Origin, X-Requested-With, Content-Type, Accept,Authorization'
   );
 
   next();
-}); */ // это от этой ошибки - На запрошенном ресурсе отсутствует заголовок Access-Control-Allow-Origin.
+}); */ // сраная политика cors
 
 app.use(express.json());
 app.use(fileUpload({}));

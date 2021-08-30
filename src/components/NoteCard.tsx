@@ -108,7 +108,7 @@ const NoteCard: React.FC<PropsType> = ({ note, removeNote, editNote }) => {
         className={classes.menu}
       >
         <MenuItem onClick={handleClose}>
-          <IconButton onClick={() => history.push('/muiForm')}>
+          <IconButton onClick={() => history.push('/nodeadd')}>
             <EditIcon style={{ color: '#1a237e' }} />
           </IconButton>
 

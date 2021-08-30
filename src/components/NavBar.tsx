@@ -146,7 +146,7 @@ const NavBar: React.FC<PropsType> = ({
             clearSelectNote();
           }}
         >
-          <Link to="/muiForm" className={classes.link}>
+          <Link to="/nodeadd" className={classes.link}>
             Create a new note
           </Link>
         </MenuItem>

@@ -29,7 +29,6 @@ export const authorization = (value: AuthType, history: any): ThunkType => {
       sessionStorage.setItem('username', data.username);
       history.push(pathname);
     } catch (e) {
-      console.log(e.message);
       dispatch(setErrorMessage(e.message));
     }
   };

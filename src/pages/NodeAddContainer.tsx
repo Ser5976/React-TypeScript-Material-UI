@@ -2,6 +2,9 @@ import React from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { NoteType, clearSelectNote } from '../store/reducers/notesReducer';
 import { sendNote, redactNote } from '../action/notesAction';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Avatar from '@material-ui/core/Avatar';
+import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import { RootStateType } from '../store/store';
 import { useHistory } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,11 +13,9 @@ import { DropzoneArea } from 'material-ui-dropzone'; // загрузка фай�
 import {
   Container,
   makeStyles,
-  Paper,
   TextField,
   Typography,
   MenuItem,
-  Icon,
   Button,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
@@ -46,38 +47,30 @@ const position: Array<PositionType> = [
 ];
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    marginTop: 25,
-    padding: '25px 25px',
-    '& .MuiTextField-root': {
-      marginBottom: 20,
-      '& fieldset': {
-        borderColor: '#1a237e',
-      },
-      '& label': {
-        color: '#1a237e',
-      },
-    },
-    '& .MuiIconButton-label': {
-      color: '#1a237e',
-    },
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%',
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
   },
 
-  paper: {
-    padding: '15px',
-  },
-  textTitle: {
-    fontSize: '25px',
-    textShadow: '1px 1px #9a0036',
-    color: '#9a0036',
-    marginBottom: 20,
-  },
   dropzone: {
-    minHeight: 100,
-    marginTop: 30,
+    minHeight: 50,
+    // marginTop: 15,
     border: '0px',
-    '& 	.MuiDropzoneArea-text': { color: '#1a237e', fontSize: '1.15rem' },
-    '& 	.MuiDropzoneArea-icon': { color: '#1a237e' },
+    '& 	.MuiDropzoneArea-text': { color: '#3f51b5', fontSize: '1.00rem' },
+    '& 	.MuiDropzoneArea-icon': { color: '#3f51b5' },
   },
 }));
 //схема валидации---------------------
@@ -88,7 +81,7 @@ const schema = yup.object().shape({
 });
 //-----------------------------------------
 
-const MuiFormContainer: React.FC<PropsType> = ({
+const NodeAddContainer: React.FC<PropsType> = ({
   sendNote,
   selectNote,
   redactNote,
@@ -100,7 +93,7 @@ const MuiFormContainer: React.FC<PropsType> = ({
   const {
     handleSubmit,
     control,
-    formState: { errors, isValid, isDirty },
+    formState: { errors },
   } = useForm<NoteType>({
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -109,8 +102,8 @@ const MuiFormContainer: React.FC<PropsType> = ({
   //создаём объект записки. 2 условия:1.если посылаем файл, то в объект включаем поле picture;
   //2.если редактируем, запускаем функцию redactNote если новую записку-sendNote
   const onSubmit: SubmitHandler<NoteType> = (data: NoteType): void => {
-    console.log('Отправлено:', data);
-    console.log('Отправлено:', selectNote._id);
+    //console.log('Отправлено:', data);
+    // console.log('Отправлено:', selectNote._id);
     //console.log(data.picture);
     const newData: any =
       data.picture.length !== 0
@@ -145,12 +138,21 @@ const MuiFormContainer: React.FC<PropsType> = ({
   };
 
   return (
-    <Container maxWidth="sm" className={classes.container}>
-      <Paper className={classes.paper}>
-        <Typography align="center" className={classes.textTitle}>
+    <Container component="main" maxWidth="sm">
+      <CssBaseline />
+      <div className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <NoteAddIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
           Создать новую запись
         </Typography>
-        <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          noValidate
+          autoComplete="off"
+          onSubmit={handleSubmit(onSubmit)}
+          className={classes.form}
+        >
           <Controller
             name="title"
             control={control}
@@ -161,8 +163,10 @@ const MuiFormContainer: React.FC<PropsType> = ({
                 label="Заголовок"
                 variant="outlined"
                 fullWidth
+                margin="normal"
                 size="medium"
                 type="text"
+                autoFocus
                 error={!!errors.title}
                 helperText={errors.title ? errors.title?.message : null}
               />
@@ -178,8 +182,9 @@ const MuiFormContainer: React.FC<PropsType> = ({
                 label="Детали"
                 variant="outlined"
                 multiline
-                rows={5}
+                rows={2}
                 fullWidth
+                margin="normal"
                 size="medium"
                 type="email"
                 error={!!errors.detalis}
@@ -199,6 +204,7 @@ const MuiFormContainer: React.FC<PropsType> = ({
                 fullWidth
                 error={!!errors.category}
                 select
+                margin="normal"
                 label="Категория"
                 variant="outlined"
                 helperText={errors.category ? errors.category?.message : null}
@@ -226,18 +232,17 @@ const MuiFormContainer: React.FC<PropsType> = ({
           />
 
           <Button
-            style={{ backgroundColor: '#9a0036', marginTop: '25px' }}
+            className={classes.submit}
             variant="contained"
             color="primary"
             fullWidth
-            endIcon={<Icon>send</Icon>}
             type="submit"
-            disabled={!isValid || !isDirty}
+            // disabled={!isValid || !isDirty}
           >
-            Send
+            Отправить
           </Button>
         </form>
-      </Paper>
+      </div>
     </Container>
   );
 };
@@ -257,4 +262,4 @@ export default connect<
   sendNote, // добавить новую записку
   redactNote, //редактировать записку
   clearSelectNote, //очистить выбранную записку
-})(MuiFormContainer);
+})(NodeAddContainer);

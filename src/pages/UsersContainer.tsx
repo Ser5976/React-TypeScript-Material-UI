@@ -10,6 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { RootStateType } from '../store/store'; // типизация всего стейта( для типизации state)
 import { UserType } from '../store/reducers/userReducer';
 import { getUsers } from '../action/userAction';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import User from '../components/User';
 import { connect } from 'react-redux';
 
@@ -17,6 +18,7 @@ import { connect } from 'react-redux';
 type MapStateToPropsType = {
   users: UserType[];
   loading: boolean;
+  errorMessage: string | null;
 };
 type MapDispathPropsType = {
   getUsers: () => void;
@@ -62,9 +64,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UsersContainer: React.FC<PropsType> = ({ users, loading, getUsers }) => {
+const UsersContainer: React.FC<PropsType> = ({
+  users,
+  loading,
+  getUsers,
+  errorMessage,
+}) => {
   const classes = useStyles();
-
+  // 'Токен не валиден'
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
@@ -75,6 +82,7 @@ const UsersContainer: React.FC<PropsType> = ({ users, loading, getUsers }) => {
           <Typography component="h1" variant="h5">
             Пользователи
           </Typography>
+
           <Button
             fullWidth
             variant="contained"
@@ -84,18 +92,42 @@ const UsersContainer: React.FC<PropsType> = ({ users, loading, getUsers }) => {
           >
             Получить
           </Button>
-          <Box className={classes.box}>
-            {users.map((item, index) => {
-              return (
-                <User
-                  key={item._id}
-                  username={item.username}
-                  index={index}
-                  id={item._id}
-                />
-              );
-            })}
-          </Box>
+
+          {errorMessage ? (
+            <Grid container>
+              <Grid item md={12}>
+                <Typography component="h1" variant="h6">
+                  Токен не валиден. Аторизируйтесь повторно!
+                </Typography>
+              </Grid>
+            </Grid>
+          ) : loading ? (
+            <Grid container>
+              <Grid item md={12}>
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  // style={{ height: window.innerHeight - 65.6 }}
+                >
+                  <CircularProgress disableShrink />
+                </Box>
+              </Grid>
+            </Grid>
+          ) : (
+            <Box className={classes.box}>
+              {users.map((item, index) => {
+                return (
+                  <User
+                    key={item._id}
+                    username={item.username}
+                    index={index}
+                    id={item._id}
+                  />
+                );
+              })}
+            </Box>
+          )}
         </div>
       </Grid>
     </Grid>
@@ -105,6 +137,7 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
   return {
     users: state.users.users, //массив пользователей
     loading: state.users.loading, //крутилка
+    errorMessage: state.users.errorMessage,
   };
 };
 export default connect<

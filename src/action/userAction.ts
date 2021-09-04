@@ -2,9 +2,10 @@ import axios from 'axios';
 import { ThunkAction } from 'redux-thunk';
 import { RootStateType } from '../store/store';
 import {
-  setUsers,
-  setLoading,
-  SetActionType,
+  setUsers, // запись массива пользователей
+  setLoading, // крутилка
+  SetActionType, // типизация экшинов
+  setErrorMessage, // запись ошибки аторизации и регистрации в стейт
 } from '../store/reducers/userReducer';
 import { ModelUrls } from '../constant/urls';
 
@@ -35,6 +36,7 @@ export const getUsers = (): ThunkType => {
       dispatch(setUsers(response.data));
     } catch (e) {
       console.log(e);
+      dispatch(setErrorMessage(e.message));
     }
   };
 };

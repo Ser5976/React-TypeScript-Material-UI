@@ -67,6 +67,7 @@ export const redactNote = (id: number | undefined, data: any): ThunkType => {
   return async (dispatch) => {
     try {
       await axios.put(ModelUrls.NOTES + id, data);
+      dispatch(getNotes());
       //  console.log(2);
     } catch (e) {
       //console.log(e);

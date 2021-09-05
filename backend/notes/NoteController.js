@@ -8,6 +8,7 @@ class NoteController {
       if (req.files) {
         const fileName = FileServise.saveFile(req.files.picture);
         const note = await Note.create({ ...req.body, picture: fileName });
+
         res.json(note);
       } else {
         const note = await Note.create(req.body);
@@ -48,6 +49,8 @@ class NoteController {
         res.status(400).json({ massage: 'Id не указан' });
       }
       if (req.files) {
+        const filePath = await Note.find({ _id: id });
+
         const fileName = FileServise.saveFile(req.files.picture);
         const updateNote = await Note.findByIdAndUpdate(
           id,
@@ -56,7 +59,11 @@ class NoteController {
             new: true,
           }
         );
-        return res.json(updateNote);
+
+        res.json(updateNote);
+        if (filePath[0].picture) {
+          FileServise.deleteFile(filePath[0].picture);
+        }
       } else {
         const updateNote = await Note.findByIdAndUpdate(id, note, {
           new: true,
@@ -75,8 +82,13 @@ class NoteController {
       if (!id) {
         res.status(400).json({ massage: 'Id не указан' });
       }
-      //const fileName = await Note.findOne({ picture });
-      //console.log(fileName);
+      //удаление файла с жесткого диска(папка static)
+      const filePath = await Note.find({ _id: id });
+      console.log(filePath[0].picture);
+      if (filePath[0].picture) {
+        FileServise.deleteFile(filePath[0].picture);
+      }
+      //удаление записки с базы
       const deleteNote = await Note.findByIdAndDelete(id);
       return res.json(deleteNote);
     } catch (e) {
@@ -85,5 +97,4 @@ class NoteController {
   }
 }
 
-//FileServise.deleteFile('91ab8c75-17bc-480c-9c59-19afa82a905a.jpg');
 export default new NoteController();

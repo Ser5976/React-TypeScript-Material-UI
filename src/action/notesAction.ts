@@ -61,13 +61,12 @@ export const getSelectNote = (id: number | undefined): ThunkType => {
   };
 };
 
-// изменяет  объек, в котором изменился  made, на серваке
+// редактирование записки
 export const redactNote = (id: number | undefined, data: any): ThunkType => {
   //console.log(1);
   return async (dispatch) => {
     try {
       await axios.put(ModelUrls.NOTES + id, data);
-      dispatch(getNotes());
       //  console.log(2);
     } catch (e) {
       //console.log(e);

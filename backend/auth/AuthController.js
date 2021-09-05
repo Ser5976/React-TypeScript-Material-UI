@@ -95,7 +95,7 @@ class AuthController {
       //console.log(accessToken);
       //проверка токена на валидность
       const userData = validationAccessToken(accessToken);
-      console.log(userData);
+      // console.log(userData);
       if (!userData) {
         return res.status(400).json({ message: 'Токен не валиден' });
       }

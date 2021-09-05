@@ -96,8 +96,12 @@ const UsersContainer: React.FC<PropsType> = ({
           {errorMessage ? (
             <Grid container>
               <Grid item md={12}>
-                <Typography component="h1" variant="h6">
-                  Токен не валиден. Аторизируйтесь повторно!
+                <Typography
+                  component="h1"
+                  variant="h6"
+                  className={classes.error}
+                >
+                  Токен не валиден. Авторизируйтесь повторно!
                 </Typography>
               </Grid>
             </Grid>

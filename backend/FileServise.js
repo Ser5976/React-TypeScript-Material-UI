@@ -1,5 +1,6 @@
 import * as uuid from 'uuid';
 import * as path from 'path';
+import * as fs from 'fs';
 
 class FileServise {
   saveFile(file) {
@@ -13,6 +14,10 @@ class FileServise {
     } catch (e) {
       console.log(e);
     }
+  }
+  deleteFile(fileName) {
+    const filePath = path.join('static', fileName);
+    fs.unlinkSync(filePath);
   }
 }
 

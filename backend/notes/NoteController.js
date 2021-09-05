@@ -75,6 +75,8 @@ class NoteController {
       if (!id) {
         res.status(400).json({ massage: 'Id не указан' });
       }
+      //const fileName = await Note.findOne({ picture });
+      //console.log(fileName);
       const deleteNote = await Note.findByIdAndDelete(id);
       return res.json(deleteNote);
     } catch (e) {
@@ -83,4 +85,5 @@ class NoteController {
   }
 }
 
+//FileServise.deleteFile('91ab8c75-17bc-480c-9c59-19afa82a905a.jpg');
 export default new NoteController();
